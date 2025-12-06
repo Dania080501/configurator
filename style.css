@@ -1,21 +1,39 @@
-/* --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СБРОС (PROFESSIONAL DARK THEME) --- */
 :root {
-    --bg-deep: #0e2a3a; /* Основной глубокий темный фон */
-    --bg-card: #ffffff; /* Фон для светлого модального окна и левой панели */
-    --bg-panel-light: #f7f7f7; /* Фон для полей ввода */
-    --bg-summary: #1c3c4f; /* Фон правой панели (самый темный) */
-    --primary-color: #4dabf5; /* Ярко-синий (Акцент) */
-    --secondary-color: #00CC66; /* Яркий зеленый (Успех/Кнопка) */
-    --text-dark: #212529; /* Темный текст на светлом фоне */
-    --text-light: #ffffff; /* Светлый текст на темном фоне */
-    --text-muted: #aebfd4; /* Приглушенный текст на темном фоне */
-    --border-color: #dee2e6; /* Светлая тонкая граница */
-    --border-dark: #2d556d; /* Темная граница */
+    --bg-deep: #0e2a3a;
+    --bg-card: #ffffff;
+    --bg-panel-light: #f7f7f7;
+    --bg-summary: #1c3c4f;
+    --primary-color: #4dabf5;
+    --secondary-color: #00CC66;
+    --text-dark: #212529;
+    --text-light: #ffffff;
+    --text-muted: #aebfd4;
+    --border-color: #dee2e6;
+    --border-dark: #2d556d;
     --danger-color: #dc3545; 
     --warning-color: #ffc107; 
     --success-color: var(--secondary-color); 
     --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.3);
     --font-family: 'Roboto', 'Inter', Arial, sans-serif;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseError {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+@keyframes pulseWarning {
+    0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
 }
 
 * {
@@ -33,7 +51,6 @@ body {
     line-height: 1.6;
 }
 
-/* --- МАКЕТ КОНТЕЙНЕРА --- */
 .container {
     display: flex;
     max-width: 1400px;
@@ -44,7 +61,6 @@ body {
     box-shadow: var(--shadow-soft);
 }
 
-/* --- ЛЕВАЯ КОЛОНКА (ВЫБОР) --- */
 .selection-panel {
     flex: 2;
     padding: 40px;
@@ -74,10 +90,17 @@ body {
     margin-bottom: 10px; 
     font-weight: 700;
     color: var(--text-dark);
+    transition: color 0.3s;
 }
-.component-section h3 i { margin-right: 8px; color: var(--primary-color); }
+.component-section h3 i { 
+    margin-right: 8px; 
+    color: var(--primary-color); 
+    transition: transform 0.3s;
+}
+.component-section:hover h3 i {
+    transform: scale(1.1);
+}
 
-/* --- КАСТОМНЫЙ SELECT (Поиск) --- */
 .custom-select { position: relative; width: 100%; }
 
 .select-selected {
@@ -86,10 +109,11 @@ body {
     padding: 10px 15px;
     cursor: pointer;
     background-color: var(--bg-panel-light); 
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 .select-selected:focus-within {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(77, 171, 245, 0.3);
 }
 .select-input {
     border: none;
@@ -113,11 +137,14 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     border: 1px solid var(--border-dark);
     border-top: none;
+    transition: max-height 0.3s ease-out;
+}
+.select-items.select-hide { 
+    display: none; 
+    max-height: 0;
 }
 .select-items::-webkit-scrollbar { width: 5px; }
 .select-items::-webkit-scrollbar-thumb { background-color: var(--border-dark); border-radius: 3px; }
-
-.select-hide { display: none; }
 
 .select-item {
     padding: 10px 15px;
@@ -128,11 +155,13 @@ body {
     justify-content: space-between;
     align-items: center;
     color: var(--text-light); 
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
+    animation: fadeInUp 0.3s ease-out;
 }
 .select-item:hover, .select-item.selected { 
     background-color: #2d556d; 
     color: var(--primary-color);
+    transform: translateX(5px);
 }
 .item-info { display: flex; justify-content: space-between; align-items: center; }
 .item-name { font-weight: 500; }
@@ -140,7 +169,6 @@ body {
 .select-item i { margin-right: 8px; color: var(--success-color); }
 
 
-/* --- ПРАВАЯ КОЛОНКА (ИТОГ) --- */
 .summary-panel {
     flex: 1;
     background-color: var(--bg-summary); 
@@ -161,13 +189,16 @@ body {
 }
 .summary-panel h2 i { margin-right: 10px; color: var(--primary-color); }
 
-/* Список выбранных компонентов */
 .summary-item {
     padding: 10px 0;
     display: grid;
     grid-template-columns: 1fr 2fr;
     font-size: 0.9em;
     border-bottom: 1px dashed var(--border-dark);
+    transition: background-color 0.3s;
+}
+.summary-item:hover {
+    background-color: #25475c;
 }
 .summary-item:last-child { border-bottom: none; }
 .sum-label { 
@@ -183,6 +214,7 @@ body {
     color: var(--primary-color); 
     font-weight: 700;
     margin-left: 10px;
+    transition: color 0.3s;
 }
 .sum-placeholder { 
     color: #4b677a; 
@@ -190,7 +222,6 @@ body {
     text-align: right;
 }
 
-/* Общая стоимость */
 .total-box {
     margin-top: 30px;
     padding: 20px 0;
@@ -204,9 +235,12 @@ body {
     font-size: 2.5em; 
     font-weight: 900; 
     color: var(--primary-color); 
+    transition: color 0.5s, transform 0.2s;
+}
+.total-box:hover .total-price {
+    transform: scale(1.05);
 }
 
-/* Кнопка покупки (главная) */
 .buy-button {
     width: 100%;
     padding: 15px;
@@ -218,24 +252,36 @@ body {
     font-weight: 700;
     cursor: pointer;
     margin-top: 30px;
-    transition: background-color 0.2s, box-shadow 0.2s;
+    transition: background-color 0.2s, box-shadow 0.3s, transform 0.2s;
     box-shadow: 0 4px 10px rgba(0, 204, 102, 0.4);
 }
 .buy-button:hover { 
     background-color: #00b35a; 
     box-shadow: 0 4px 15px rgba(0, 204, 102, 0.7);
+    transform: translateY(-2px);
+}
+.buy-button:active {
+    transform: translateY(0);
 }
 
 
-/* --- СТАТУСЫ СОВМЕСТИМОСТИ И ПРЕДУПРЕЖДЕНИЯ --- */
 .compatibility-alert {
     font-size: 0.85em;
     padding: 5px 0;
     margin-top: 5px;
     font-weight: 500;
+    transition: color 0.3s;
 }
-.compatibility-alert.danger { color: var(--danger-color); display: block; }
-.compatibility-alert.warning { color: var(--warning-color); display: block; }
+.compatibility-alert.danger { 
+    color: var(--danger-color); 
+    display: block; 
+    animation: fadeIn 0.5s ease-out;
+}
+.compatibility-alert.warning { 
+    color: var(--warning-color); 
+    display: block; 
+    animation: fadeIn 0.5s ease-out;
+}
 
 .status-box {
     padding: 12px;
@@ -245,6 +291,7 @@ body {
     font-size: 1em;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
 }
 .status-box i { margin-right: 10px; }
 .status-ok { 
@@ -256,15 +303,15 @@ body {
     background-color: #574619; 
     color: var(--warning-color); 
     border: 1px solid var(--warning-color);
+    animation: pulseWarning 1.5s infinite;
 }
 .status-error { 
     background-color: #692a34; 
     color: var(--danger-color); 
     border: 1px solid var(--danger-color);
+    animation: pulseError 1.5s infinite;
 }
 
-
-/* --- СТИЛИ МОДАЛЬНОГО ОКНА (СВЕТЛЫЙ ФОН) --- */
 
 .modal-overlay {
     display: none; 
@@ -276,6 +323,7 @@ body {
     height: 100%;
     overflow: auto; 
     background-color: rgba(0,0,0,0.75); 
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-content {
@@ -288,6 +336,7 @@ body {
     max-width: 500px;
     position: relative;
     box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    animation: fadeInUp 0.4s ease-out;
 }
 
 .close-button {
@@ -298,8 +347,12 @@ body {
     font-size: 30px;
     font-weight: 200;
     cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
 }
-.close-button:hover { color: var(--danger-color); }
+.close-button:hover { 
+    color: var(--danger-color); 
+    transform: rotate(90deg);
+}
 
 .modal-content h2 {
     color: var(--primary-color);
@@ -326,6 +379,7 @@ body {
     padding: 8px 0;
     font-size: 0.9em;
     border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
 }
 .modal-item:last-child { border-bottom: none; }
 .modal-item-name { color: var(--text-dark); }
@@ -347,7 +401,6 @@ body {
     color: var(--secondary-color); 
 }
 
-/* СДЕРЖАННАЯ КНОПКА ПОДТВЕРЖДЕНИЯ (ПО ЖЕЛАНИЮ ПОЛЬЗОВАТЕЛЯ) */
 .confirm-order-button {
     background-color: transparent !important; 
     color: var(--primary-color); 
@@ -356,11 +409,12 @@ body {
     padding: 14px 10px; 
     margin-top: 25px;
     box-shadow: none; 
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
 }
 .confirm-order-button:hover {
     background-color: var(--primary-color) !important; 
     color: var(--text-light) !important; 
+    transform: scale(1.02);
 }
 .confirm-order-button:disabled {
     background-color: #f7f7f7 !important; 
@@ -368,9 +422,8 @@ body {
     border-color: #ccc;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
-
-/* --- АДАПТИВНОСТЬ (Responsive Design) --- */
 
 @media (max-width: 900px) {
     .container {
@@ -407,3 +460,4 @@ body {
         font-size: 1.8em;
     }
 }
+
